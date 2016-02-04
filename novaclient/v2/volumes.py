@@ -151,8 +151,8 @@ class VolumeManager(base.ManagerWithFind):
         body = {'volumeAttachment': {'volumeId': volume_id}}
         if device is not None:
             body['volumeAttachment']['device'] = device
-            if service_provider is not None:
-                body['volumeAttachment']['serviceProvider'] = service_provider
+        if service_provider is not None:
+            body['volumeAttachment']['serviceProvider'] = service_provider
         return self._create("/servers/%s/os-volume_attachments" % server_id,
                             body, "volumeAttachment")
 
