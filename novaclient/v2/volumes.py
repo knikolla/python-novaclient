@@ -138,7 +138,8 @@ class VolumeManager(base.ManagerWithFind):
                 'volumev2', allowed_types=('volume', 'volumev2')):
             return self._delete("/volumes/%s" % base.getid(volume))
 
-    def create_server_volume(self, server_id, volume_id, device=None):
+    def create_server_volume(self, server_id, volume_id, device=None,
+                             service_provider=None):
         """
         Attach a volume identified by the volume ID to the given server ID
 
@@ -150,6 +151,8 @@ class VolumeManager(base.ManagerWithFind):
         body = {'volumeAttachment': {'volumeId': volume_id}}
         if device is not None:
             body['volumeAttachment']['device'] = device
+            if service_provider is not None:
+                body['volumeAttachment']['serviceProvider'] = service_provider
         return self._create("/servers/%s/os-volume_attachments" % server_id,
                             body, "volumeAttachment")
 
