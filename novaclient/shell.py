@@ -601,6 +601,13 @@ class OpenStackComputeShell(object):
                   'in novaclient 3.3.0.') % '--bypass-url',
             help=argparse.SUPPRESS)
 
+        parser.add_argument(
+            '--nova-provider',
+            metavar='<nova_provider>',
+            dest='nova_provider',
+            default=None,
+            help="Federation!")
+
         # The auth-system-plugins might require some extra options
         novaclient.auth_plugin.load_auth_system_opts(parser)
 
@@ -882,6 +889,14 @@ class OpenStackComputeShell(object):
             raise exc.CommandError(
                 _("You must provide an auth url "
                   "via either --os-auth-url or env[OS_AUTH_URL]"))
+
+        if args.nova_provider is not None:
+            from keystoneauth1.identity import v3
+            k2k_auth = v3.Keystone2Keystone(keystone_auth,
+                                            str(args.nova_provider),
+                                            project_name='admin',
+                                            project_domain_id='default')
+            keystone_auth = k2k_auth
 
         # This client is just used to discover api version. Version API needn't
         # microversion, so we just pass version 2 at here.
